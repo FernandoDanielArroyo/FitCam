@@ -4,3 +4,10 @@
 # ignore all checkpoint files 
 .ipynb_checkpoints/
 
+# ignore data folders
+fitness_poses_images_in/pushups_down/
+fitness_poses_images_in/pushups_up/
+fitness_poses_images_out/
+
+__pycache__
+*.mp4
