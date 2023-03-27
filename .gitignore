@@ -5,5 +5,5 @@
 .ipynb_checkpoints/
 
 # ignore data folders
-pushup/
-pushdown/
+fitness_poses_images_in/pushups_down/
+fitness_poses_images_in/pushups_up/
