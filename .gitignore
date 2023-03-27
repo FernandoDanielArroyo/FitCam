@@ -8,7 +8,6 @@
 fitness_poses_images_in/pushups_down/
 fitness_poses_images_in/pushups_up/
 fitness_poses_images_out/
-fitness_poses_csvs_out/
 
 __pycache__
 *.mp4
