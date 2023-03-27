@@ -4,3 +4,6 @@
 # ignore all checkpoint files 
 .ipynb_checkpoints/
 
+# ignore data folders
+pushup/
+pushdown/
