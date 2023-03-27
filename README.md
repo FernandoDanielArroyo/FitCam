@@ -1,2 +1,5 @@
 # FitCam
-test
+
+```
+python run_webcam.py
+```
