@@ -11,3 +11,4 @@ fitness_poses_images_out/
 
 __pycache__
 *.mp4
+poetry.lock
