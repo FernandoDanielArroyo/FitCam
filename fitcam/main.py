@@ -27,7 +27,7 @@ def main():
     poses = load_poses()
     print(poses)
     args = parse()
-    print(f'FitCam Yoga v0.1')
+    print(f'FitCam Yoga v0.25')
     print(args)
     save = False if args.output_file == 'No output' else True 
     class_name = 'warrior2'
@@ -103,6 +103,7 @@ def main():
 
                 print(pose_classification)
                 output_frame = cv2.cvtColor(output_frame, cv2.COLOR_BGR2RGB)
+                output_frame = cv2.putText(output_frame, f'{pose_classification}', org=(100,100), fontFace=1, fontScale=1, color=1)
                 cv2.imshow('MediaPipe', output_frame)
 
                 if save:
