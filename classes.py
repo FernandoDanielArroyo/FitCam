@@ -494,10 +494,6 @@ from PIL import ImageDraw
 import requests
 
 
-class GoodPause(object):
-  """Return True si à la frame considéré, on est à la bonne pose. Sinon False."""
-
-
 
 
 class PoseClassificationVisualizer(object):
@@ -572,13 +568,18 @@ class PoseClassificationVisualizer(object):
                pose_classification,
                pose_classification_filtered,
                Timer,
-               fps):
+               fps=30,
+               good_pause=False,
+               image_pose='image.png'):
     """Renders pose classifcation and counter until given frame."""
 
-    # Timer & bonne pause
-    if self.valid_pose:
-      self.Timer += 1 / self.fps
 
+    # Timer & bonne pause
+    if good_pause:
+      self.Timer += 1 / self.fps
+      self._timer_font_color = 'green'
+    else:
+      self._timer_font_color = 'red'
 
 
 
@@ -593,17 +594,9 @@ class PoseClassificationVisualizer(object):
     output_height = output_img.size[1]
 
 
-    if self.valid_pose: # Est-on dans la bonne pose ?
-      self._timer_font_color = 'green'
-      self._titre_font_color = 'green'
-    else:
-      self._timer_font_color = 'red'
-      #self._titre_font_color = 'red'
-
-
     # Draw the pose.
 
-    image_a_affichee = self._plot_img("image.png", output_width=output_width, output_height=output_height)
+    image_a_affichee = self._plot_img(image_pose, output_width=output_width, output_height=output_height)
     #import pdb; pdb.set_trace()
     output_img.paste(image_a_affichee, (0,0)
                  # (int(output_width * self._plot_max_width),
