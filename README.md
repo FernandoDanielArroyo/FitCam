@@ -1,8 +1,7 @@
 # FitCam
 
-```
-python run_webcam.py
-```
+FitCam is now using poetry :) 
+Please follow the following instructions to use
 
 ## Poetry
 Using pyenv 
