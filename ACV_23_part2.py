@@ -9,16 +9,6 @@
 # %% [markdown]
 # Connect the Colab to hosted Python3 runtime (check top-right corner) and then install required dependencies.
 
-# %%
-!pip install pillow
-!pip install matplotlib
-!pip install numpy
-!pip install opencv-python
-!pip install tqdm
-!pip install requests
-
-!pip install mediapipe
-
 # %% [markdown]
 # # Codebase
 
