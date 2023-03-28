@@ -493,30 +493,54 @@ from PIL import ImageDraw
 import requests
 
 class PoseClassificationVisualizer(object):
-  """Keeps track of claassifcations for every frame and renders them."""
+  """Keeps track of classifcations for every frame and renders them."""
 
   def __init__(self,
                class_name,
-               plot_location_x=0.05,
-               plot_location_y=0.05,
-               plot_max_width=0.4,
-               plot_max_height=0.4,
-               plot_figsize=(9, 4),
                plot_x_max=None,
                plot_y_max=None,
-               counter_location_x=0.85,
-               counter_location_y=0.05,
-               counter_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
-               counter_font_color='red',
-               counter_font_size=0.15):
+
+               # plot pose
+               plot_pose_x=0.01,
+               plot_pose_y=0.01,
+               plot_pose_max_width=0.4,
+               plot_pose_max_height=0.4,
+               plot_pose_figsize=(9, 4),
+
+
+               # titre avec nom pose et durée
+               titre_location_x=0.85,
+               titre_location_y=0.05,
+               titre_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
+               titre_font_color='black',
+               titre_font_size=0.15
+
+
+               # plot Timer
+               timer_location_x=0.85,
+               timer_location_y=0.05,
+               timer_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
+               timer_font_color=['red', 'freen'],
+               timer_font_size=0.15
+               ):
+    
     self._class_name = class_name
+    self._plot_x_max = plot_x_max
+    self._plot_y_max = plot_y_max
+
     self._plot_location_x = plot_location_x
     self._plot_location_y = plot_location_y
     self._plot_max_width = plot_max_width
     self._plot_max_height = plot_max_height
     self._plot_figsize = plot_figsize
-    self._plot_x_max = plot_x_max
-    self._plot_y_max = plot_y_max
+
+    self._counter_location_x = counter_location_x
+    self._counter_location_y = counter_location_y
+    self._counter_font_path = counter_font_path
+    self._counter_font_color = counter_font_color
+    self._counter_font_size = counter_font_size
+
+
     self._counter_location_x = counter_location_x
     self._counter_location_y = counter_location_y
     self._counter_font_path = counter_font_path
