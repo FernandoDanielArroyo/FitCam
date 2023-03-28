@@ -102,8 +102,13 @@ def main():
                     # take the latest repetitions count.
 
                 print(pose_classification)
+                if pose_classification:
+                    list_val = [(v, k) for k,v in pose_classification.items()]
+                    sorted_list = sorted(list_val, reverse=True)
+
                 output_frame = cv2.cvtColor(output_frame, cv2.COLOR_BGR2RGB)
-                output_frame = cv2.putText(output_frame, f'{pose_classification}', org=(100,100), fontFace=1, fontScale=1, color=1)
+                if pose_classification:
+                    output_frame = cv2.putText(output_frame, f'{sorted_list[0]}', org=(100,100), fontFace=1, fontScale=1, color=1)
                 cv2.imshow('MediaPipe', output_frame)
 
                 if save:
