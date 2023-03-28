@@ -16,18 +16,27 @@ def main():
     args = parse()
     print(f'test poetry script')
     print(args)
+    save = False if args.output_file == 'No output' else True 
 
 
     if args.input_file == 'webcam':
         print('Loading WebCam')
         cap = cv2.VideoCapture(0)
+        video_fps = cap.get(cv2.CAP_PROP_FPS)
+        video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        if save:
+            out_video = cv2.VideoWriter(args.output_file, cv2.VideoWriter_fourcc(*'mp4v'), video_fps, (video_width, video_height))
+
         try:
             while cap.isOpened():
                 success, input_frame = cap.read()
                 output_frame = input_frame.copy()
                 cv2.imshow('MediaPipe', np.array(output_frame)[:,:,::-1])
+                if save:
+                    out_video.write(cv2.cvtColor(np.array(output_frame), cv2.COLOR_RGB2BGR))
 
-                
                 if cv2.waitKey(5) & 0xFF == ord('q'):
                     break
         finally:
@@ -42,6 +51,9 @@ def main():
             video_fps = cap.get(cv2.CAP_PROP_FPS)
             video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            if save:
+                out_video = cv2.VideoWriter(args.output_file, cv2.VideoWriter_fourcc(*'mp4v'), video_fps, (video_width, video_height))
+
             for i in range(int(video_n_frames)):
                 success, input_frame = cap.read()
                 output_frame = input_frame.copy()
