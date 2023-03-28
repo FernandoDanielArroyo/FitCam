@@ -495,7 +495,6 @@ import requests
 
 
 
-
 class PoseClassificationVisualizer(object):
   """Keeps track of classifcations for every frame and renders them."""
 
@@ -534,16 +533,17 @@ class PoseClassificationVisualizer(object):
     self._plot_x_max = plot_x_max
     self._plot_y_max = plot_y_max
 
-    self.valid_pose = False # Est-on dans la bonne pose ou non.
-
+    
     self._plot_pose_x = plot_pose_x
     self._plot_pose_y = plot_pose_y
     self._plot_max_width = plot_pose_max_width
     self._plot_max_height = plot_pose_max_height
     self._plot_figsize = plot_pose_figsize
 
-    if self.valid_pose: # Est-on dans la bonne pose ?
 
+
+    self._titre_location_x = titre_location_x
+    self._titre_location_y = titre_location_y
     self._titre_font_path = titre_font_path
     self._titre_font_color = titre_font_color
     self._titre_font_size = titre_font_size
@@ -583,6 +583,7 @@ class PoseClassificationVisualizer(object):
 
 
 
+
     # Extend classification history.
     self._pose_classification_history.append(pose_classification)
     self._pose_classification_filtered_history.append(pose_classification_filtered)
@@ -594,9 +595,11 @@ class PoseClassificationVisualizer(object):
     output_height = output_img.size[1]
 
 
+
     # Draw the pose.
 
     image_a_affichee = self._plot_img(image_pose, output_width=output_width, output_height=output_height)
+
     #import pdb; pdb.set_trace()
     output_img.paste(image_a_affichee, (0,0)
                  # (int(output_width * self._plot_max_width),
