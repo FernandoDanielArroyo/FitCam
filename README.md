@@ -16,7 +16,13 @@ conda create --name poetry_env python=3.9
 conda activate poetry_env
 ```
 
+install dependancies : 
 ```
 poetry install
-poetry run python FitCam/run_webcam.py
+```
+
+test environnement
+```
+poetry run webcam
+poetry run python fitcam/run_webcam.py
 ```
