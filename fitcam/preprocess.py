@@ -8,6 +8,7 @@ import os
 from PIL import Image
 import sys
 import tqdm
+import argparse
 
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 from mediapipe.python.solutions import pose as mp_pose
@@ -214,7 +215,6 @@ class BootstrapHelper(object):
 
 # ## Bootstrap images
 
-import argparse
 
 def parse_preprocess():
     parser = argparse.ArgumentParser(
@@ -239,7 +239,7 @@ def preprocess():
   #       image_002.jpg
   #       ...
   #     ...
-  bootstrap_images_in_folder = 'YogaData_in'
+  bootstrap_images_in_folder = 'yoga_images_in'
 
   # Output folders for bootstrapped images and CSVs.
   bootstrap_images_out_folder = 'yoga_images_out'
