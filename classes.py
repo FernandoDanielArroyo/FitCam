@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+import cv2
 
 
 def show_image(img, figsize=(10, 10)):
@@ -492,6 +493,9 @@ from PIL import ImageFont
 from PIL import ImageDraw
 import requests
 
+
+
+
 class PoseClassificationVisualizer(object):
   """Keeps track of classifcations for every frame and renders them."""
 
@@ -509,55 +513,76 @@ class PoseClassificationVisualizer(object):
 
 
                # titre avec nom pose et durée
-               titre_location_x=0.85,
-               titre_location_y=0.05,
+               titre_location_x=0.31,
+               titre_location_y=0.01,
                titre_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
                titre_font_color='black',
-               titre_font_size=0.15
+               titre_font_size=0.15,
 
 
                # plot Timer
-               timer_location_x=0.85,
-               timer_location_y=0.05,
+               timer_location_x=0.8,
+               timer_location_y=0.15,
                timer_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
-               timer_font_color=['red', 'freen'],
-               timer_font_size=0.15
+               timer_font_color='green',
+               timer_font_size=0.15,
+
+               fps = 30
                ):
     
     self._class_name = class_name
     self._plot_x_max = plot_x_max
     self._plot_y_max = plot_y_max
 
-    self._plot_location_x = plot_location_x
-    self._plot_location_y = plot_location_y
-    self._plot_max_width = plot_max_width
-    self._plot_max_height = plot_max_height
-    self._plot_figsize = plot_figsize
+    self.valid_pose = False # Est-on dans la bonne pose ou non.
 
-    self._counter_location_x = counter_location_x
-    self._counter_location_y = counter_location_y
-    self._counter_font_path = counter_font_path
-    self._counter_font_color = counter_font_color
-    self._counter_font_size = counter_font_size
+    self._plot_pose_x = plot_pose_x
+    self._plot_pose_y = plot_pose_y
+    self._plot_max_width = plot_pose_max_width
+    self._plot_max_height = plot_pose_max_height
+    self._plot_figsize = plot_pose_figsize
+
+    if self.valid_pose: # Est-on dans la bonne pose ?
+
+    self._titre_font_path = titre_font_path
+    self._titre_font_color = titre_font_color
+    self._titre_font_size = titre_font_size
 
 
-    self._counter_location_x = counter_location_x
-    self._counter_location_y = counter_location_y
-    self._counter_font_path = counter_font_path
-    self._counter_font_color = counter_font_color
-    self._counter_font_size = counter_font_size
+    self._timer_location_x = timer_location_x
+    self._timer_location_y = timer_location_y
+    self._timer_font_path = timer_font_path
+    self._timer_font_color = timer_font_color
+    self._timer_font_size = timer_font_size
 
     self._counter_font = None
 
     self._pose_classification_history = []
     self._pose_classification_filtered_history = []
 
+    self.Timer = 0
+    self.fps = fps
+
   def __call__(self,
                frame,
                pose_classification,
                pose_classification_filtered,
-               repetitions_count):
+               Timer,
+               fps,
+               good_pause=False,
+               image_pose='image.png'):
     """Renders pose classifcation and counter until given frame."""
+
+
+    # Timer & bonne pause
+    if good_pause:
+      self.Timer += 1 / self.fps
+      self._timer_font_color = 'green'
+    else:
+      self._timer_font_color = 'red'
+
+
+
     # Extend classification history.
     self._pose_classification_history.append(pose_classification)
     self._pose_classification_filtered_history.append(pose_classification_filtered)
@@ -568,63 +593,61 @@ class PoseClassificationVisualizer(object):
     output_width = output_img.size[0]
     output_height = output_img.size[1]
 
-    # Draw the plot.
-    img = self._plot_classification_history(output_width, output_height)
-    img.thumbnail((int(output_width * self._plot_max_width),
-                   int(output_height * self._plot_max_height)),
-                  Image.ANTIALIAS)
-    output_img.paste(img,
-                     (int(output_width * self._plot_location_x),
-                      int(output_height * self._plot_location_y)))
 
-    # Draw the count.
+    # Draw the pose.
+
+    image_a_affichee = self._plot_img(image_pose, output_width=output_width, output_height=output_height)
+    #import pdb; pdb.set_trace()
+    output_img.paste(image_a_affichee, (0,0)
+                 # (int(output_width * self._plot_max_width),
+                 # int(output_height * self._plot_max_height))
+                 )
+
+    # Draw the title.
+
     output_img_draw = ImageDraw.Draw(output_img)
     if self._counter_font is None:
-      font_size = int(output_height * self._counter_font_size)
-      font_request = requests.get(self._counter_font_path, allow_redirects=True)
+      font_size = int(output_height * self._titre_font_size)
+      font_request = requests.get(self._titre_font_path, allow_redirects=True)
       self._counter_font = ImageFont.truetype(io.BytesIO(font_request.content), size=font_size)
-    output_img_draw.text((output_width * self._counter_location_x,
-                          output_height * self._counter_location_y),
-                         str(repetitions_count),
+
+    output_img_draw.text((output_width * self._titre_location_x,
+                          output_height * self._titre_location_y),
+                         f'NomPause',
                          font=self._counter_font,
-                         fill=self._counter_font_color)
+                         fill=self._titre_font_color # vert si bonne pose, rouge si mauvaise pause
+                         )
+
+    # Draw the timer.  
+
+    #output_img_draw = ImageDraw.Draw(output_img)
+    if self._counter_font is None:
+      font_size = int(output_height * self._timer_font_size)
+      font_request = requests.get(self._timer_font_path, allow_redirects=True)
+      self._counter_font = ImageFont.truetype(io.BytesIO(font_request.content), size=font_size)
+
+    output_img_draw.text((output_width * self._timer_location_x,
+                          output_height * self._timer_location_y),
+                         str(int(self.Timer))+"s",
+                         font=self._counter_font,
+                         fill=self._timer_font_color # vert si bonne pose, rouge si mauvaise pause
+                         )
 
     return output_img
 
-  def _plot_classification_history(self, output_width, output_height):
-    fig = plt.figure(figsize=self._plot_figsize)
 
-    for classification_history in [self._pose_classification_history,
-                                   self._pose_classification_filtered_history]:
-      y = []
-      for classification in classification_history:
-        if classification is None:
-          y.append(None)
-        elif self._class_name in classification:
-          y.append(classification[self._class_name])
-        else:
-          y.append(0)
-      plt.plot(y, linewidth=7)
+  def _plot_img(self, image, output_width, output_height):
+    """
+    Give img and sizes, and it will plot it.
+    The size needs to be standardized.
+    """
 
-    plt.grid(axis='y', alpha=0.75)
-    plt.xlabel('Frame')
-    plt.ylabel('Confidence')
-    plt.title('Classification history for `{}`'.format(self._class_name))
-    plt.legend(loc='upper right')
+    img = Image.open(image).convert("RGB")
 
-    if self._plot_y_max is not None:
-      plt.ylim(top=self._plot_y_max)
-    if self._plot_x_max is not None:
-      plt.xlim(right=self._plot_x_max)
+    dims = (int(0.3*output_width), int(0.3*output_height))
 
-    # Convert plot to image.
-    buf = io.BytesIO()
-    dpi = min(
-        output_width * self._plot_max_width / float(self._plot_figsize[0]),
-        output_height * self._plot_max_height / float(self._plot_figsize[1]))
-    fig.savefig(buf, dpi=dpi)
-    buf.seek(0)
-    img = Image.open(buf)
-    plt.close()
+    img_resized = img.resize(dims)
 
-    return img
+    return img_resized
+
+
