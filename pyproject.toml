@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fitcam"
-version = "0.1.1.dev"
+version = "0.1.2.dev"
 description = "Yoga App 4.0 using AI"
 authors = ["raphael_campus <raphael.bouvet@le-campus-numerique.fr>"]
 readme = "README.md"
