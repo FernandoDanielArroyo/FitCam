@@ -30,7 +30,7 @@ def main():
     print(f'FitCam Yoga v0.25')
     print(args)
     save = False if args.output_file == 'No output' else True 
-    class_name = 'warrior2'
+    class_name = poses[0]
     pose_samples_folder = 'data'
 
     pose_tracker = mp_pose.Pose()
@@ -55,9 +55,6 @@ def main():
     pose_classification = None
     pose_landsmarks = None
 
-    # Initialize duration coutner.
-    duration_counter = PoseDuration(class_name=class_name)
-
     if args.input_file == 'webcam':
         print('Loading WebCam')
         cap = cv2.VideoCapture(0)
@@ -69,89 +66,95 @@ def main():
             out_video = cv2.VideoWriter(args.output_file, cv2.VideoWriter_fourcc(*'mp4v'), video_fps, (video_width, video_height))
 
         try:
-            while cap.isOpened():
+            for pose in poses:
+                class_name = pose
+                duration_counter = PoseDuration(class_name=class_name)
+                timer = 0.0
+                while cap.isOpened():
 
-                success, input_frame = cap.read()
-                # Run pose tracker.
-                input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
-                result = pose_tracker.process(image=input_frame)
-                pose_landmarks = result.pose_landmarks
+                    success, input_frame = cap.read()
+                    # Run pose tracker.
+                    input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
+                    result = pose_tracker.process(image=input_frame)
+                    pose_landmarks = result.pose_landmarks
 
-                #Draw pose prediction.
-                output_frame = input_frame.copy()
-                if pose_landmarks is not None:
-                    mp_drawing.draw_landmarks(
-                        image=output_frame,
-                        landmark_list=pose_landmarks,
-                        connections=mp_pose.POSE_CONNECTIONS)
-                    frame_height, frame_width = output_frame.shape[0], output_frame.shape[1]
-                    pose_landmarks = np.array([[lmk.x * frame_width, lmk.y * frame_height, lmk.z * frame_width]
-                                    for lmk in pose_landmarks.landmark], dtype=np.float32)
-                    assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(pose_landmarks.shape)
+                    #Draw pose prediction.
+                    output_frame = input_frame.copy()
+                    if pose_landmarks is not None:
+                        mp_drawing.draw_landmarks(
+                            image=output_frame,
+                            landmark_list=pose_landmarks,
+                            connections=mp_pose.POSE_CONNECTIONS)
+                        frame_height, frame_width = output_frame.shape[0], output_frame.shape[1]
+                        pose_landmarks = np.array([[lmk.x * frame_width, lmk.y * frame_height, lmk.z * frame_width]
+                                        for lmk in pose_landmarks.landmark], dtype=np.float32)
+                        assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(pose_landmarks.shape)
 
-                    # Classify the pose on the current frame.
-                    pose_classification = pose_classifier(pose_landmarks)
-                    pose_classification_filtered = pose_classification_filter(pose_classification)
-                    duration_counts = duration_counter(pose_classification_filtered)
+                        # Classify the pose on the current frame.
+                        pose_classification = pose_classifier(pose_landmarks)
+                        pose_classification_filtered = pose_classification_filter(pose_classification)
+                        duration_counts = duration_counter(pose_classification_filtered)
 
-                    # Draw classification plot and repetition counter.
+                        # Draw classification plot and repetition counter.
 
-                    #fps = cap.get(cv2.CAP_PROP_FPS)
-                    #print('fps :',fps)  # 30 images par secondes
-                    output_frame = pose_classification_visualizer(
-                    frame=output_frame,
-                    pose_classification=pose_classification,
-                    pose_classification_filtered=pose_classification_filtered,
-                    titre_pose = class_name,
-                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
-                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
-                    )
-        
+                        #fps = cap.get(cv2.CAP_PROP_FPS)
+                        #print('fps :',fps)  # 30 images par secondes
+                        output_frame = pose_classification_visualizer(
+                            frame=output_frame,
+                            pose_classification=pose_classification,
+                            pose_classification_filtered=pose_classification_filtered,
+                            titre_pose = class_name,
+                            Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                            fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                            )
+                    else:
+                        # No pose => no classification on current frame.
+                        pose_classification = None
 
+                        # Still add empty classification to the filter to maintaing correct
+                        # smoothing for future frames.
+                        pose_classification_filtered = pose_classification_filter(dict())
+                        pose_classification_filtered = None
 
-                else:
-                    # No pose => no classification on current frame.
-                    pose_classification = None
+                        # Don't update the counter presuming that person is 'frozen'. Just
+                        # take the latest repetitions count.
+                        duration_counts = duration_counter._fps_in_pose
 
-                    # Still add empty classification to the filter to maintaing correct
-                    # smoothing for future frames.
-                    pose_classification_filtered = pose_classification_filter(dict())
-                    pose_classification_filtered = None
+                        # Draw classification plot and repetition counter.
 
-                    # Don't update the counter presuming that person is 'frozen'. Just
-                    # take the latest repetitions count.
-                    duration_counts = duration_counter._fps_in_pose
-
-                    # Draw classification plot and repetition counter.
-
-                    #fps = cap.get(cv2.CAP_PROP_FPS)
-                    #print('fps :',fps)  # 30 images par secondes
-                    output_frame = pose_classification_visualizer(
-                    frame=output_frame,
-                    pose_classification=pose_classification,
-                    pose_classification_filtered=pose_classification_filtered,
-                    titre_pose = "PoseName",
-                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
-                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
-                    )
-        
+                        #fps = cap.get(cv2.CAP_PROP_FPS)
+                        #print('fps :',fps)  # 30 images par secondes
+                        output_frame = pose_classification_visualizer(
+                            frame=output_frame,
+                            pose_classification=pose_classification,
+                            pose_classification_filtered=pose_classification_filtered,
+                            titre_pose = class_name,
+                            Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                            fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                            )
+            
 
 
-                print(pose_classification)
-                if pose_classification:
-                    list_val = [(v, k) for k,v in pose_classification.items()]
-                    sorted_list = sorted(list_val, reverse=True)
+                    print(pose_classification)
+                    if pose_classification:
+                        list_val = [(v, k) for k,v in pose_classification.items()]
+                        sorted_list = sorted(list_val, reverse=True)
 
-                output_frame = cv2.cvtColor(output_frame, cv2.COLOR_BGR2RGB)
-                if pose_classification:
-                    output_frame = cv2.putText(output_frame, f'{sorted_list[0]}', org=(100,100), fontFace=1, fontScale=1, color=1)
-                cv2.imshow('MediaPipe', output_frame)
+                    output_frame = cv2.cvtColor(output_frame, cv2.COLOR_BGR2RGB)
+                    if pose_classification:
+                        output_frame = cv2.putText(output_frame, f'{sorted_list[0]}', org=(100,100), fontFace=1, fontScale=1, color=1)
+                    cv2.imshow('MediaPipe', output_frame)
 
-                if save:
-                    out_video.write(cv2.cvtColor(np.array(output_frame), cv2.COLOR_RGB2BGR))
+                    if save:
+                        out_video.write(cv2.cvtColor(np.array(output_frame), cv2.COLOR_RGB2BGR))
 
-                if cv2.waitKey(5) & 0xFF == ord('q'):
-                    break
+                    if cv2.waitKey(5) & 0xFF == ord('q'):
+                        break
+
+                    timer = np.round(1.5 * duration_counts/30, 1)
+                    if timer > 5:
+                        break
+
         finally:
             cap.release()
             cv2.destroyAllWindows()   
