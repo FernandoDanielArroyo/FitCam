@@ -30,7 +30,7 @@ def main():
     print(f'FitCam Yoga v0.25')
     print(args)
     save = False if args.output_file == 'No output' else True 
-    class_name = poses[0]
+    class_name = poses[1]
     pose_samples_folder = 'data'
 
     pose_tracker = mp_pose.Pose()
@@ -97,17 +97,17 @@ def main():
 
                         # Draw classification plot and repetition counter.
 
-                    #fps = cap.get(cv2.CAP_PROP_FPS)
-                    #print('fps :',fps)  # 30 images par secondes
-                    output_frame = pose_classification_visualizer(
-                    frame=output_frame,
-                    pose_classification=pose_classification,
-                    pose_classification_filtered=pose_classification_filtered,
-                    titre_pose = class_name,
-                    image_pose = "data/ref/" + class_name + ".jpg",
-                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
-                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
-                    )
+                        #fps = cap.get(cv2.CAP_PROP_FPS)
+                        #print('fps :',fps)  # 30 images par secondes
+                        output_frame = pose_classification_visualizer(
+                            frame=output_frame,
+                            pose_classification=pose_classification,
+                            pose_classification_filtered=pose_classification_filtered,
+                            titre_pose = class_name,
+                            image_pose = "data/ref/" + class_name + ".jpg",
+                            Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                            fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                            )
         
 
 
@@ -115,27 +115,27 @@ def main():
                     # No pose => no classification on current frame.
                     pose_classification = None
 
-                        # Still add empty classification to the filter to maintaing correct
-                        # smoothing for future frames.
-                        pose_classification_filtered = pose_classification_filter(dict())
-                        pose_classification_filtered = None
+                    # Still add empty classification to the filter to maintaing correct
+                    # smoothing for future frames.
+                    pose_classification_filtered = pose_classification_filter(dict())
+                    pose_classification_filtered = None
 
-                        # Don't update the counter presuming that person is 'frozen'. Just
-                        # take the latest repetitions count.
-                        duration_counts = duration_counter._fps_in_pose
+                    # Don't update the counter presuming that person is 'frozen'. Just
+                    # take the latest repetitions count.
+                    duration_counts = duration_counter._fps_in_pose
 
-                        # Draw classification plot and repetition counter.
+                    # Draw classification plot and repetition counter.
 
                     #fps = cap.get(cv2.CAP_PROP_FPS)
                     #print('fps :',fps)  # 30 images par secondes
                     output_frame = pose_classification_visualizer(
-                    frame=output_frame,
-                    pose_classification=pose_classification,
-                    pose_classification_filtered=pose_classification_filtered,
-                    titre_pose = class_name,
-                    image_pose = "data/ref/" + class_name + ".jpg",
-                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
-                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                        frame=output_frame,
+                        pose_classification=pose_classification,
+                        pose_classification_filtered=pose_classification_filtered,
+                        titre_pose = class_name,
+                        image_pose = "data/ref/" + class_name + ".jpg",
+                        Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                        fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
                     )
         
 
