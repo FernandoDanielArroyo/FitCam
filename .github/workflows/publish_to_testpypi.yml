@@ -2,8 +2,8 @@ name: Build and Upload Python Wheel to test-PyPI
 
 on:
   push:
-  branches:
-    - Dev
+    branches:
+      - Dev
 
 jobs:
   build:
