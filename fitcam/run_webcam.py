@@ -7,13 +7,14 @@ from classes import PoseClassifier
 from classes import EMADictSmoothing
 from classes import RepetitionCounter
 from classes import PoseClassificationVisualizer
+from classes import PoseDuration
 from classes import show_image
 from mediapipe.python.solutions import pose as mp_pose
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 
 
 video_path = 'pushups.mp4'
-class_name='pushups_up'
+class_name='goddess'
 out_video_path = 'pushups-sample-out.mp4'
 
 video_cap = cv2.VideoCapture(video_path)
@@ -36,7 +37,7 @@ from mediapipe.python.solutions import pose as mp_pose
 
 # Folder with pose class CSVs. That should be the same folder you using while
 # building classifier to output CSVs.
-pose_samples_folder = 'fitness_poses_csvs_out'
+pose_samples_folder = 'YogaData_csvs_out_copy'
 
 # Initialize tracker.
 pose_tracker = mp_pose.Pose()
@@ -74,6 +75,8 @@ pose_classification_visualizer = PoseClassificationVisualizer(
     # Graphic looks nicer if it's the same as `top_n_by_mean_distance`.
     plot_y_max=10)
 
+# Initialize duration coutner.
+duration_counter = PoseDuration(class_name=class_name)
 
 cap = cv2.VideoCapture(0)
 print(cap.isOpened())
@@ -84,6 +87,7 @@ try:
         if not success:
             print("Ignoring empty camera frame.")
             break #continue     # If loading a video, use 'break' instead of 'continue'.
+
 
         # Run pose tracker.
         input_frame = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
@@ -113,6 +117,8 @@ try:
 
           # Count repetitions.
           repetitions_count = repetition_counter(pose_classification_filtered)
+
+          duration_counts = duration_counter(pose_classification_filtered)
         else:
           # No pose => no classification on current frame.
           pose_classification = None
@@ -125,6 +131,9 @@ try:
           # Don't update the counter presuming that person is 'frozen'. Just
           # take the latest repetitions count.
           repetitions_count = repetition_counter.n_repeats
+        
+          duration_counts = duration_counter._fps_in_pose
+
 
         # Draw classification plot and repetition counter.
 
