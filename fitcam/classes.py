@@ -597,7 +597,8 @@ class PoseClassificationVisualizer(object):
                frame,
                pose_classification,
                pose_classification_filtered,
-               Timer,
+               titre_pose="NomPose",
+               Timer=0,
                fps=30,
                image_pose='image.png'):
     """Renders pose classifcation and counter until given frame."""
@@ -605,7 +606,7 @@ class PoseClassificationVisualizer(object):
 
     # Récupération des valeurs
     self.fps = fps
-    self.Timer = np.round(Timer/self.fps, 1) 
+    self.Timer = np.round(1.5 * Timer/self.fps, 1) # 1.5 est totalement artificiel pour corriger le lag
 
     # Timer & bonne pause
     if self.Timer > 0 :
@@ -648,7 +649,7 @@ class PoseClassificationVisualizer(object):
 
     output_img_draw.text((output_width * self._titre_location_x,
                           output_height * self._titre_location_y),
-                         f'NomPause',
+                         str(titre_pose),
                          font=self._counter_font,
                          fill=self._titre_font_color # vert si bonne pose, rouge si mauvaise pause
                          )
@@ -667,7 +668,7 @@ class PoseClassificationVisualizer(object):
                          font=self._counter_font,
                          fill=self._timer_font_color # vert si bonne pose, rouge si mauvaise pause
                          )
-
+    output_img = np.array(output_img)
     return output_img
 
 
