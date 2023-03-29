@@ -8,6 +8,8 @@
 fitness_poses_images_in/pushups_down/
 fitness_poses_images_in/pushups_up/
 fitness_poses_images_out/
+yoga_images_in
+yoga_images_out
 DATASET/
 Yoga*/
 yoga_poses_images_out/
@@ -15,3 +17,11 @@ yoga_poses_csvs_out/
 
 __pycache__
 *.mp4
+
+yoga_images_in
+yoga_images_out
+
+# Poetry and venv 
+.venv/
+poetry.lock
+
