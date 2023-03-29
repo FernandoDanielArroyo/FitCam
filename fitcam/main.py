@@ -94,6 +94,21 @@ def main():
                     pose_classification_filtered = pose_classification_filter(pose_classification)
                     duration_counts = duration_counter(pose_classification_filtered)
 
+                    # Draw classification plot and repetition counter.
+
+                    #fps = cap.get(cv2.CAP_PROP_FPS)
+                    #print('fps :',fps)  # 30 images par secondes
+                    output_frame = pose_classification_visualizer(
+                    frame=output_frame,
+                    pose_classification=pose_classification,
+                    pose_classification_filtered=pose_classification_filtered,
+                    titre_pose = class_name,
+                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                    )
+        
+
+
                 else:
                     # No pose => no classification on current frame.
                     pose_classification = None
@@ -106,6 +121,21 @@ def main():
                     # Don't update the counter presuming that person is 'frozen'. Just
                     # take the latest repetitions count.
                     duration_counts = duration_counter._fps_in_pose
+
+                    # Draw classification plot and repetition counter.
+
+                    #fps = cap.get(cv2.CAP_PROP_FPS)
+                    #print('fps :',fps)  # 30 images par secondes
+                    output_frame = pose_classification_visualizer(
+                    frame=output_frame,
+                    pose_classification=pose_classification,
+                    pose_classification_filtered=pose_classification_filtered,
+                    titre_pose = "PoseName",
+                    Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
+                    fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+                    )
+        
+
 
                 print(pose_classification)
                 if pose_classification:
