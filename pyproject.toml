@@ -6,7 +6,7 @@ authors = ["raphael_campus <raphael.bouvet@le-campus-numerique.fr>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9.*"
+python = "^3.9"
 Pillow = "^9.4.0"
 matplotlib = "^3.7.1"
 numpy = "^1.24.2"
