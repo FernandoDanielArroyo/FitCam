@@ -495,73 +495,48 @@ import requests
 
 
 
-
 class PoseClassificationVisualizer(object):
   """Keeps track of classifcations for every frame and renders them."""
 
   def __init__(self,
-               class_name,
+               class_name,    
                plot_x_max=None,
                plot_y_max=None,
-
-               # plot pose
-               plot_pose_x=0.01,
-               plot_pose_y=0.01,
-               plot_pose_max_width=0.4,
-               plot_pose_max_height=0.4,
-               plot_pose_figsize=(9, 4),
-
-
-               # titre avec nom pose et durée
-               titre_location_x=0.31,
-               titre_location_y=0.01,
-               titre_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
-               titre_font_color='black',
-               titre_font_size=0.15,
-
-
-               # plot Timer
-               timer_location_x=0.8,
-               timer_location_y=0.15,
-               timer_font_path='https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true',
-               timer_font_color='green',
-               timer_font_size=0.15,
-
-               fps = 30
                ):
     
-    self._class_name = class_name
-    self._plot_x_max = plot_x_max
-    self._plot_y_max = plot_y_max
+      self._class_name = class_name
+      self._plot_x_max = plot_x_max
+      self._plot_y_max = plot_y_max
 
-    self.valid_pose = False # Est-on dans la bonne pose ou non.
-
-    self._plot_pose_x = plot_pose_x
-    self._plot_pose_y = plot_pose_y
-    self._plot_max_width = plot_pose_max_width
-    self._plot_max_height = plot_pose_max_height
-    self._plot_figsize = plot_pose_figsize
-
-    self._titre_location_x = titre_location_x
-    self._titre_location_y = titre_location_y
-    self._titre_font_path = titre_font_path
-    self._titre_font_color = titre_font_color
-    self._titre_font_size = titre_font_size
+      
+      self._plot_pose_x = 0.01
+      self._plot_pose_y = 0.01
+      self._plot_max_width = 0.4
+      self._plot_max_height = 0.4
+      self._plot_figsize = (9, 4)
 
 
-    self._timer_location_x = timer_location_x
-    self._timer_location_y = timer_location_y
-    self._timer_font_path = timer_font_path
-    self._timer_font_color = timer_font_color
-    self._timer_font_size = timer_font_size
+      # titre avec nom pose et durée
+      self._titre_location_x = 0.31
+      self._titre_location_y = 0.01
+      self._titre_font_path = 'https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true'
+      self._titre_font_color = 'black'
+      self._titre_font_size = 0.15
 
-    self._counter_font = None
+      # plot Timer
+      self._timer_location_x = 0.8
+      self._timer_location_y = 0.15
+      self._timer_font_path = 'https://github.com/googlefonts/roboto/blob/main/src/hinted/Roboto-Regular.ttf?raw=true'
+      self._timer_font_color = 'green'
+      self._timer_font_size = 0.15
 
-    self._pose_classification_history = []
-    self._pose_classification_filtered_history = []
+      self._counter_font = None
 
-    self.Timer = 0
-    self.fps = fps
+      self._pose_classification_history = []
+      self._pose_classification_filtered_history = []
+
+      #self.Timer = 0
+      self.fps = 30
 
   def __call__(self,
                frame,
@@ -569,17 +544,20 @@ class PoseClassificationVisualizer(object):
                pose_classification_filtered,
                Timer,
                fps=30,
-               good_pause=False,
                image_pose='image.png'):
     """Renders pose classifcation and counter until given frame."""
 
 
+    # Récupération des valeurs
+    self.fps = fps
+    self.Timer = np.round(Timer/self.fps, 1) 
+
     # Timer & bonne pause
-    if good_pause:
-      self.Timer += 1 / self.fps
+    if self.Timer > 0 :
       self._timer_font_color = 'green'
     else:
       self._timer_font_color = 'red'
+
 
 
 
@@ -594,9 +572,11 @@ class PoseClassificationVisualizer(object):
     output_height = output_img.size[1]
 
 
+
     # Draw the pose.
 
     image_a_affichee = self._plot_img(image_pose, output_width=output_width, output_height=output_height)
+
     #import pdb; pdb.set_trace()
     output_img.paste(image_a_affichee, (0,0)
                  # (int(output_width * self._plot_max_width),
@@ -628,7 +608,7 @@ class PoseClassificationVisualizer(object):
 
     output_img_draw.text((output_width * self._timer_location_x,
                           output_height * self._timer_location_y),
-                         str(int(self.Timer))+"s",
+                         str(self.Timer)+"s",
                          font=self._counter_font,
                          fill=self._timer_font_color # vert si bonne pose, rouge si mauvaise pause
                          )
