@@ -53,7 +53,7 @@ class BootstrapHelper(object):
     # Create output folder for CVSs.
     if not os.path.exists(self._csvs_out_folder):
       os.makedirs(self._csvs_out_folder)
-
+      os.makedirs(self._csvs_out_folder+'/ref')
     for pose_class_name in self._pose_class_names:
       print('Bootstrapping ', pose_class_name, file=sys.stderr)
 
@@ -240,10 +240,11 @@ def preprocess():
   #       ...
   #     ...
   bootstrap_images_in_folder = 'yoga_images_in'
-
-  # Output folders for bootstrapped images and CSVs.
   bootstrap_images_out_folder = 'yoga_images_out'
   bootstrap_csvs_out_folder = 'data'
+
+  # Output folders for bootstrapped images and CSVs.
+  
 
   # Initialize helper.
   bootstrap_helper = BootstrapHelper(
