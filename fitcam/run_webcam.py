@@ -128,14 +128,15 @@ try:
 
         # Draw classification plot and repetition counter.
 
-        fps = cap.get(cv2.CAP_PROP_FPS)
+        #fps = cap.get(cv2.CAP_PROP_FPS)
         #print('fps :',fps)  # 30 images par secondes
         output_frame = pose_classification_visualizer(
         frame=output_frame,
         pose_classification=pose_classification,
         pose_classification_filtered=pose_classification_filtered,
-        Timer=repetitions_count,
-        fps = fps)
+        Timer=0, # Nb de Frames à récupérer dans la classe de Noemi
+        fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
+        )
         
         cv2.imshow('MediaPipe', np.array(output_frame)[:,:,::-1])
 
