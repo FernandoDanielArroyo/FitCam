@@ -9,6 +9,9 @@ fitness_poses_images_in/pushups_down/
 fitness_poses_images_in/pushups_up/
 fitness_poses_images_out/
 DATASET/
+Yoga*/
+yoga_poses_images_out/
+yoga_poses_csv_out/
 
 __pycache__
 *.mp4
