@@ -103,7 +103,7 @@ def main():
                     pose_classification=pose_classification,
                     pose_classification_filtered=pose_classification_filtered,
                     titre_pose = class_name,
-                    image_pose = "data/print_yoga/" + class_name + ".jpg",
+                    image_pose = "data/ref/" + class_name + ".jpg",
                     Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
                     fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
                     )
@@ -132,7 +132,7 @@ def main():
                     pose_classification=pose_classification,
                     pose_classification_filtered=pose_classification_filtered,
                     titre_pose = class_name,
-                    image_pose = "data/print_yoga/" + class_name + ".jpg",
+                    image_pose = "data/ref/" + class_name + ".jpg",
                     Timer=duration_counts, # Nb de Frames à récupérer dans la classe de Noemi
                     fps = 30, #Nb de frame en une seconde. Possiblement a revérifier avec les 2 commandes fps commentés ci-dessus
                     )
