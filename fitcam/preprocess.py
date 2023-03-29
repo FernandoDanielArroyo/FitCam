@@ -327,14 +327,18 @@ def preprocess():
 
   # Move samples image to data/ref
 
-  path_images_process = Path('data/yoga_images_in')
+  path_images_process = Path('yoga_images_in')
   path_ref_images = Path('data/ref')
 
   for csv in Path('data/').glob('*.csv'):
     pose_name = csv.stem
     out_image_name = path_ref_images / f'{pose_name}.png'
     # select a pose in the path_images_process:
-    images = list((path_images_process/pose_name).rglob('.jpg'))
+    path_images_pose = path_images_process / pose_name
+    print(path_images_pose)
+    images = list(path_images_pose.glob('*.jpg'))
+    print(images)
+    
     shutil.copy(images[0], out_image_name)
 
 
