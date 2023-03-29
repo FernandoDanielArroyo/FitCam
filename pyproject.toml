@@ -3,6 +3,7 @@ name = "fitcam"
 version = "0.1.0.dev"
 description = "Yoga App 4.0 using AI"
 authors = ["raphael_campus <raphael.bouvet@le-campus-numerique.fr>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.9.*"
@@ -23,6 +24,3 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 webcam = "fitcam.main:main"
 preprocess = "fitcam.preprocess:preprocess"
-
-[tool.poetry]
-readme = "README.md"
