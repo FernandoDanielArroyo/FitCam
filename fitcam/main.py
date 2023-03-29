@@ -55,6 +55,9 @@ def main():
     pose_classification = None
     pose_landsmarks = None
 
+    # Initialize duration coutner.
+    duration_counter = PoseDuration(class_name=class_name)
+
     if args.input_file == 'webcam':
         print('Loading WebCam')
         cap = cv2.VideoCapture(0)
@@ -89,6 +92,8 @@ def main():
                     # Classify the pose on the current frame.
                     pose_classification = pose_classifier(pose_landmarks)
                     pose_classification_filtered = pose_classification_filter(pose_classification)
+                    duration_counts = duration_counter(pose_classification_filtered)
+
                 else:
                     # No pose => no classification on current frame.
                     pose_classification = None
@@ -100,6 +105,7 @@ def main():
 
                     # Don't update the counter presuming that person is 'frozen'. Just
                     # take the latest repetitions count.
+                    duration_counts = duration_counter._fps_in_pose
 
                 print(pose_classification)
                 if pose_classification:
