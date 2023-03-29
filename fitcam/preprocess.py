@@ -337,7 +337,7 @@ def preprocess():
       # select a pose in the path_images_process:
       path_images_pose = path_images_process / pose_name
       print(path_images_pose)
-      images = list(path_images_pose.glob('*'))
+      images = list(path_images_pose.glob('**/*'))
       print(images)
       shutil.copy(images[0], out_image_name)
 
