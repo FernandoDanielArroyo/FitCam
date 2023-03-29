@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "fitcam"
-version = "0.1.0.dev"
+version = "0.1.1.dev"
 description = "Yoga App 4.0 using AI"
 authors = ["raphael_campus <raphael.bouvet@le-campus-numerique.fr>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.9.*"
+python = "^3.9"
 Pillow = "^9.4.0"
 matplotlib = "^3.7.1"
 numpy = "^1.24.2"
