@@ -2,6 +2,8 @@
 # ## Bootstrap helper
 
 import cv2
+import shutil
+from pathlib import Path
 from matplotlib import pyplot as plt
 import numpy as np
 import os
@@ -239,13 +241,14 @@ def preprocess():
   #       image_002.jpg
   #       ...
   #     ...
+
+  # Output folders for bootstrapped images and CSVs.
+
   bootstrap_images_in_folder = 'yoga_images_in'
   bootstrap_images_out_folder = 'yoga_images_out'
   bootstrap_csvs_out_folder = 'data'
 
-  # Output folders for bootstrapped images and CSVs.
   
-
   # Initialize helper.
   bootstrap_helper = BootstrapHelper(
       images_in_folder=bootstrap_images_in_folder,
@@ -321,6 +324,19 @@ def preprocess():
     input('Mettz Yes si vous avez fini')
     bootstrap_helper.align_images_and_csvs(print_removed_items=False)
     bootstrap_helper.print_images_out_statistics()
+
+  # Move samples image to data/ref
+
+  path_images_process = Path('data/yoga_images_in')
+  path_ref_images = Path('data/ref')
+
+  for csv in Path('data/').glob('*.csv'):
+    pose_name = csv.stem
+    out_image_name = path_ref_images / f'{pose_name}.png'
+    # select a pose in the path_images_process:
+    images = list((path_images_process/pose_name).rglob('.jpg'))
+    shutil.copy(images[0], out_image_name)
+
 
 if __name__ == '__main__':
   print('Test preprocessing')
