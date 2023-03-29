@@ -333,13 +333,13 @@ def preprocess():
   for csv in Path('data/').glob('*.csv'):
     pose_name = csv.stem
     out_image_name = path_ref_images / f'{pose_name}.png'
-    # select a pose in the path_images_process:
-    path_images_pose = path_images_process / pose_name
-    print(path_images_pose)
-    images = list(path_images_pose.glob('*'))
-    print(images)
-    
-    shutil.copy(images[0], out_image_name)
+    if not out_image_name.exists():
+      # select a pose in the path_images_process:
+      path_images_pose = path_images_process / pose_name
+      print(path_images_pose)
+      images = list(path_images_pose.glob('*'))
+      print(images)
+      shutil.copy(images[0], out_image_name)
 
 
 if __name__ == '__main__':
